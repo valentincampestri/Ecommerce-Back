@@ -33,6 +33,7 @@ public class ProductController {
     @PostMapping("/Create")
     public ResponseEntity<Producto> createProducto(@RequestBody Producto producto) {
         Producto createdProducto = productoService.createProducto(producto);
+
         return new ResponseEntity<>(createdProducto, HttpStatus.CREATED);
     }
     @GetMapping("/{id}")

@@ -12,4 +12,5 @@ public interface IProductoService {
     public Page<Producto> findAll(PageRequest pr);
     public Optional<Producto> findById(long id);
     public Producto createProducto(Producto producto) throws ProductoDuplicateExeption;
+    Producto updateProducto(Producto producto);
 }

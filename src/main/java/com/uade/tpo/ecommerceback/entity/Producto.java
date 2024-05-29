@@ -2,6 +2,7 @@ package com.uade.tpo.ecommerceback.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Setter;
 
 @Data
 @Entity
@@ -14,8 +15,12 @@ public class Producto {
     @Column(nullable = false)
     private String nombre;
 
+    @Setter
     @Column(nullable = false)
     private String descripcion;
+
+    @Column(nullable = false)
+    private Long stock;
 
     @Column(nullable = false)
     private Double precio;
@@ -23,11 +28,22 @@ public class Producto {
     @OneToOne(mappedBy = "producto")
     private ItemCompra producto;
 
-
-    @ManyToOne // Muchos productos pueden pertenecer a una categoría
+    @ManyToOne
     @JoinColumn(name = "categoria_id", referencedColumnName = "id")
     private Categoria categoria;
 
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Long getStock() {
+        return stock;
+    }
+
+    public void setStock(Long stock) {
+        this.stock = stock;
+    }
 
     public Long getId() {
         return id;
@@ -47,10 +63,6 @@ public class Producto {
 
     public String getDescripcion() {
         return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
     }
 
     public Double getPrecio() {

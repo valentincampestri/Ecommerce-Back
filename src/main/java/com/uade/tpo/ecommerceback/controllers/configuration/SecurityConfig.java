@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req.requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/error/**").permitAll()
                         .requestMatchers("/Producto/**").permitAll()
+                        .requestMatchers("/ShoppingCart/**").permitAll()
                         .requestMatchers("/categories/**").hasAnyAuthority(TipoUsuario.class.descriptorString())
                         .anyRequest()
                         .authenticated())

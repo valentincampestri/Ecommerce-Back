@@ -9,6 +9,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface IProductoRepository extends JpaRepository<Producto, Long> {
-    @Query(value="select p from Producto p where p.nombre = ?1")
-    List<Producto> findByNombre(String nombre);
+    @Query("SELECT p FROM Producto p WHERE LOWER(p.nombre) = LOWER(?1)")
+    Producto findFirstByNombre(String nombre);
 }
