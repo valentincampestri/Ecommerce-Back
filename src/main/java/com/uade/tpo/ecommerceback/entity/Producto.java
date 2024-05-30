@@ -16,7 +16,6 @@ public class Producto {
     @Column(nullable = false)
     private String nombre;
 
-    @Setter
     @Column(nullable = false)
     private String descripcion;
 
@@ -29,7 +28,6 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "categoria_id", referencedColumnName = "id")
     private Categoria categoria;
-
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
