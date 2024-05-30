@@ -29,7 +29,8 @@ public class SecurityConfig {
                         .requestMatchers("/error/**").permitAll()
                         .requestMatchers("/Producto/**").permitAll()
                         .requestMatchers("/ShoppingCart/**").permitAll()
-                        .requestMatchers("/categories/**").hasAnyAuthority(TipoUsuario.class.descriptorString())
+                        .requestMatchers("/categories/**").permitAll()
+                        // .requestMatchers("/categories/**").hasAnyAuthority(TipoUsuario.class.descriptorString())
                         .anyRequest()
                         .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
@@ -39,4 +40,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-

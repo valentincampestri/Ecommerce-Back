@@ -9,6 +9,13 @@ import lombok.Data;
 @Entity
 public class Categoria {
 
+    public Categoria() {
+    }
+
+    public Categoria(String nombre) {
+        this.nombre = nombre;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
