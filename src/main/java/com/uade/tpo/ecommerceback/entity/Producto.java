@@ -1,9 +1,7 @@
 package com.uade.tpo.ecommerceback.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Setter;
 
 @Data
 @Entity
