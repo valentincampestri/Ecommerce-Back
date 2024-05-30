@@ -8,6 +8,7 @@ public class ProductoRequest {
     private String nombre;
     private String descripcion;
     private Double precio;
+    private long stock;
     private Long idCategoria;
 }
 

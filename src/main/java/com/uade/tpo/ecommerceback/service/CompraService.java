@@ -1,9 +1,13 @@
 package com.uade.tpo.ecommerceback.service;
 
+import com.uade.tpo.ecommerceback.controllers.product.ProductoCantidadRequest;
+import com.uade.tpo.ecommerceback.controllers.product.ProductoRequest;
 import com.uade.tpo.ecommerceback.controllers.shoppingCart.CompraRequest;
 import com.uade.tpo.ecommerceback.entity.Compra;
+import com.uade.tpo.ecommerceback.entity.ItemCompra;
 import com.uade.tpo.ecommerceback.entity.Producto;
 import com.uade.tpo.ecommerceback.repository.ICompraRepository;
+import com.uade.tpo.ecommerceback.repository.IItemCompraRepository;
 import com.uade.tpo.ecommerceback.repository.IProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,21 +23,34 @@ public class CompraService implements ICompraService {
     private ICompraRepository compraRepository;
     @Autowired
     private IProductoRepository productoRepository;
+    @Autowired
+    private IItemCompraRepository compraItemRepository;
     @Override
-    public Compra GuardarCompra(CompraRequest compra) {
+    public Compra GuardarCompra(CompraRequest compraRequest ) {
         Compra compraSave = new Compra();
         List<Producto> productoList = new ArrayList<>();
         double montoTotal = 0;
-        for (Long id : compra.getIdProductos()){
-            productoList.add(productoRepository.findById(id).get());
-        }
-        for (Producto producto : productoList){
-            producto.setStock(producto.getStock() - 1);
+        for (ProductoCantidadRequest productoCantidadRequest : compraRequest.getProductoCantidadRequests()){
+            Producto producto =  productoRepository.findById(productoCantidadRequest.getIdProducto()).get();
+            producto.setStock(producto.getStock() - productoCantidadRequest.getCantidad());
             productoRepository.save(producto);
             montoTotal += producto.getPrecio();
+            productoList.add(producto);
         }
         compraSave.setFecha(LocalDate.now());
         compraSave.setMonto(montoTotal);
-        return compraRepository.save(compraSave);
+        compraSave = compraRepository.save(compraSave);
+
+        for(Producto producto: productoList){
+            int cantidad = compraRequest.getCantidadById(producto.getId());
+            ItemCompra itemCompra = new ItemCompra();
+            itemCompra.setProducto(producto);
+            itemCompra.setCantidad(cantidad);
+            itemCompra.setPrecioUnitario(producto.getPrecio() * cantidad);
+            itemCompra.setCompra(compraSave);
+            compraItemRepository.save(itemCompra);
+        }
+
+        return compraSave;
     }
 }

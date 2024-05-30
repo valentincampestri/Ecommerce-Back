@@ -1,5 +1,6 @@
 package com.uade.tpo.ecommerceback.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class Compra {
 
     @ManyToOne
     @JoinColumn(name = "items_compra")
+    @JsonIgnore
     private ItemCompra items_compra;
 
     @OneToMany(mappedBy = "compra")

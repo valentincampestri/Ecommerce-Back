@@ -36,7 +36,6 @@ public class ProductoService implements IProductoService{
             categoria = categoriaRepository.save(categoria);
         }
         producto.setCategoria(categoria);
-        producto.setStock(1L);
         Producto productoExistente = productoRepository.findFirstByNombre(producto.getNombre());
         if (productoExistente == null) {
             return productoRepository.save(producto);

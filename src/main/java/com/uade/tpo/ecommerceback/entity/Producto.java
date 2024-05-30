@@ -1,5 +1,6 @@
 package com.uade.tpo.ecommerceback.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
@@ -24,9 +25,6 @@ public class Producto {
 
     @Column(nullable = false)
     private Double precio;
-
-    @OneToOne(mappedBy = "producto")
-    private ItemCompra producto;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", referencedColumnName = "id")
@@ -71,14 +69,6 @@ public class Producto {
 
     public void setPrecio(Double precio) {
         this.precio = precio;
-    }
-
-    public ItemCompra getProducto() {
-        return producto;
-    }
-
-    public void setProducto(ItemCompra producto) {
-        this.producto = producto;
     }
 
     public Categoria getCategoria() {
