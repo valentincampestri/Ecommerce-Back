@@ -1,10 +1,7 @@
 package com.uade.tpo.ecommerceback.service.implementations;
 
-import com.uade.tpo.ecommerceback.controllers.auth.MessageDto;
-import com.uade.tpo.ecommerceback.controllers.auth.UserAttributesRequestDto;
+import com.uade.tpo.ecommerceback.controllers.auth.*;
 import com.uade.tpo.ecommerceback.controllers.configuration.JwtService;
-import com.uade.tpo.ecommerceback.controllers.auth.AuthenticationRequestDto;
-import com.uade.tpo.ecommerceback.controllers.auth.AuthenticationResponse;
 import com.uade.tpo.ecommerceback.entity.Rol;
 import com.uade.tpo.ecommerceback.entity.Usuario;
 import com.uade.tpo.ecommerceback.exceptions.NotFoundException;
@@ -17,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Pattern;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService implements IAuthenticationService {
@@ -24,6 +23,8 @@ public class AuthenticationService implements IAuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$");
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequestDto request) {
@@ -42,6 +43,10 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public AuthenticationResponse register(UserAttributesRequestDto request) {
+        if (!isPasswordValid(request.getContrasenia())) {
+            throw new IllegalArgumentException("La contraseña no cumple con al menos una de las siguientes condiciones: 8 caracteres, 1 minúscula, 1 mayúscula y un número");
+        }
+
         Usuario usuario = Usuario.builder()
                 .nombre(request.getNombre())
                 .apellido(request.getApellido())
@@ -73,13 +78,18 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public MessageDto changeAccountData(UserAttributesRequestDto request) {
+    public MessageDto changeAccountData(UserNewPasswordDto request) {
+        authenticate(new AuthenticationRequestDto(request.getMail(), request.getActualContrasenia()));
         Usuario usuarioDestino = repository.findByMail(request.getMail()).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
-        usuarioDestino.setNombre(request.getNombre());
-        usuarioDestino.setApellido(request.getApellido());
-        usuarioDestino.setDocumento(request.getDocumento());
-        usuarioDestino.setContrasenia(passwordEncoder.encode(request.getContrasenia()));
+        if (!isPasswordValid(request.getNuevaContrasenia())) {
+            throw new IllegalArgumentException("La contraseña no cumple con al menos una de las siguientes condiciones: 8 caracteres, 1 minúscula, 1 mayúscula y un número");
+        }
+        usuarioDestino.setContrasenia(passwordEncoder.encode(request.getNuevaContrasenia()));
         repository.save(usuarioDestino);
         return new MessageDto("Datos del usuario actualizados correctamente.");
+    }
+
+    private boolean isPasswordValid(String password) {
+        return PASSWORD_PATTERN.matcher(password).matches();
     }
 }

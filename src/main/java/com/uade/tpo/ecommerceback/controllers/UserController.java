@@ -2,6 +2,7 @@ package com.uade.tpo.ecommerceback.controllers;
 
 import com.uade.tpo.ecommerceback.controllers.auth.AuthenticationRequestDto;
 import com.uade.tpo.ecommerceback.controllers.auth.UserAttributesRequestDto;
+import com.uade.tpo.ecommerceback.controllers.auth.UserNewPasswordDto;
 import com.uade.tpo.ecommerceback.service.IAuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class UserController {
     }
 
     @PutMapping("/user/change")
-    public ResponseEntity<?> changeAccountPassword(@RequestBody UserAttributesRequestDto request){
+    public ResponseEntity<?> changeAccountPassword(@RequestBody UserNewPasswordDto request){
         return ResponseEntity.ok(authService.changeAccountData(request));
     }
 
